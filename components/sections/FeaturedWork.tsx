@@ -47,50 +47,50 @@ function ProjectCard({
         target="_blank"
         rel="noopener noreferrer"
         className="no-underline"
-        style={{ textDecoration: 'none' }}
+        style={{ textDecoration: "none" }}
       >
-      <div data-cursor-hover className="flex flex-col group cursor-pointer">
-        {/* Image area */}
-        <div
-          className={`relative overflow-hidden rounded-lg border border-white/5 ${aspect}`}
-        >
-          {/* Project image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={image}
-            alt={name}
-            className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-[1.03] group-hover:brightness-90 transition-all duration-700 ease-out"
-          />
+        <div data-cursor-hover className="flex flex-col group cursor-pointer">
+          {/* Image area */}
+          <div
+            className={`relative overflow-hidden rounded-lg border border-white/5 ${aspect}`}
+          >
+            {/* Project image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image}
+              alt={name}
+              className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-[1.03] group-hover:brightness-90 transition-all duration-700 ease-out"
+            />
 
-          {/* Dark overlay on hover */}
-          <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+            {/* Dark overlay on hover */}
+            <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
 
-          {/* Centered project name overlay */}
-          <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <span
-              className="font-display text-foreground text-center px-6 leading-tight"
-              style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
-            >
-              {name}
-            </span>
+            {/* Centered project name overlay */}
+            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <span
+                className="font-display text-foreground text-center px-6 leading-tight"
+                style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
+              >
+                {name}
+              </span>
+            </div>
+
+            {/* View Project — bottom right */}
+            <div className="absolute bottom-5 right-5 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+              <span className="text-xs text-foreground/80 tracking-wide uppercase">
+                View Project →
+              </span>
+            </div>
           </div>
 
-          {/* View Project — bottom right */}
-          <div className="absolute bottom-5 right-5 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-            <span className="text-xs text-foreground/80 tracking-wide uppercase">
-              View Project →
+          {/* Meta */}
+          <div className="flex items-center justify-between mt-4">
+            <span className="font-display text-lg text-foreground">{name}</span>
+            <span className="text-xs text-muted uppercase tracking-wider">
+              {category}
             </span>
           </div>
         </div>
-
-        {/* Meta */}
-        <div className="flex items-center justify-between mt-4">
-          <span className="font-display text-lg text-foreground">{name}</span>
-          <span className="text-xs text-muted uppercase tracking-wider">
-            {category}
-          </span>
-        </div>
-      </div>
       </a>
     </FadeIn>
   );
