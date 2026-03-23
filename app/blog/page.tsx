@@ -50,7 +50,7 @@ const POSTS = [
 
 export default function BlogPage() {
   return (
-    <div className="bg-[#F5F0EB]">
+    <div className="bg-background">
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-40 md:py-48 px-6 md:px-16">

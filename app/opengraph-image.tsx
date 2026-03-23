@@ -10,7 +10,7 @@ export default function OGImage() {
     (
       <div
         style={{
-          background: '#F5F0EB',
+          background: '#080808',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -28,7 +28,7 @@ export default function OGImage() {
             position: 'absolute',
             inset: 0,
             backgroundImage:
-              'linear-gradient(rgba(26,26,26,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(26,26,26,0.05) 1px, transparent 1px)',
+              'linear-gradient(rgba(245,245,240,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(245,245,240,0.03) 1px, transparent 1px)',
             backgroundSize: '80px 80px',
           }}
         />
@@ -39,7 +39,7 @@ export default function OGImage() {
             position: 'absolute',
             top: '80px',
             right: '80px',
-            color: '#8B8680',
+            color: '#666666',
             fontSize: '13px',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
@@ -54,7 +54,7 @@ export default function OGImage() {
           style={{
             fontSize: '80px',
             fontWeight: 300,
-            color: '#1A1A1A',
+            color: '#F5F5F0',
             lineHeight: 0.95,
             letterSpacing: '-0.02em',
             marginBottom: '32px',
@@ -63,14 +63,14 @@ export default function OGImage() {
           }}
         >
           <span>Beyond</span>
-          <span style={{ color: '#C17F59' }}>Digital Vision</span>
+          <span style={{ color: '#999999' }}>Digital Vision</span>
         </div>
 
         {/* Description */}
         <div
           style={{
             fontSize: '20px',
-            color: '#8B8680',
+            color: '#666666',
             lineHeight: 1.5,
             maxWidth: '600px',
             display: 'flex',
@@ -87,7 +87,7 @@ export default function OGImage() {
             left: 0,
             right: 0,
             height: '3px',
-            background: '#C17F59',
+            background: 'linear-gradient(90deg, #F5F5F0 0%, transparent 60%)',
           }}
         />
       </div>

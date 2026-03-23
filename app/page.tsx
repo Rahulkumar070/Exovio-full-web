@@ -1,19 +1,19 @@
-import Hero from '@/components/sections/Hero';
-import InfoGrid from '@/components/sections/InfoGrid';
-import Marquee from '@/components/ui/Marquee';
-import FeaturedWork from '@/components/sections/FeaturedWork';
-import Services from '@/components/sections/Services';
-import Testimonials from '@/components/sections/Testimonials';
-import CTA from '@/components/sections/CTA';
+import Hero from "@/components/sections/Hero";
+import InfoGrid from "@/components/sections/InfoGrid";
+import Marquee from "@/components/ui/Marquee";
+import Services from "@/components/sections/Services";
+import FeaturedWork from "@/components/sections/FeaturedWork";
+import Testimonials from "@/components/sections/Testimonials";
+import CTA from "@/components/sections/CTA";
 
 export default function Page() {
   return (
-    <div className="bg-[#F5F0EB]">
+    <div className="bg-background">
       <Hero />
       <InfoGrid />
       <Marquee />
-      <FeaturedWork />
       <Services />
+      <FeaturedWork />
       <Testimonials />
       <CTA />
     </div>

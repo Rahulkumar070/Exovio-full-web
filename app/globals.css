@@ -5,33 +5,30 @@
   --font-body: var(--font-dm-sans);
   --font-serif: var(--font-instrument-serif);
 
-  --color-bg: #F5F0EB;
-  --color-bg-dark: #1A1A1A;
-  --color-text: #1A1A1A;
-  --color-text-light: #F5F0EB;
-  --color-muted: #8B8680;
-  --color-border: #D9D4CE;
-  --color-accent: #C17F59;
-
-  /* Legacy aliases so token-based classes keep working */
-  --color-background: #F5F0EB;
-  --color-surface: #EEEBE6;
-  --color-foreground: #1A1A1A;
-  --color-subtle: #8B8680;
-}
-
-html, body {
-  background-color: #F5F0EB !important;
-  overscroll-behavior: none;
+  --color-background: #080808;
+  --color-surface: #111111;
+  --color-foreground: #F5F5F0;
+  --color-muted: #999999;
+  --color-subtle: #666666;
+  --color-border: #222222;
 }
 
 @media (hover: hover) and (pointer: fine) {
   body { cursor: none; }
 }
 
+html {
+  background-color: #080808 !important;
+}
+body {
+  background-color: #080808 !important;
+  overflow-x: clip;
+  overscroll-behavior: none;
+}
+
 ::selection {
-  background: rgba(26, 26, 26, 0.15);
-  color: #1A1A1A;
+  background: rgba(245, 245, 240, 0.2);
+  color: #F5F5F0;
 }
 
 @keyframes slow-spin {
@@ -47,10 +44,4 @@ html, body {
 @keyframes page-enter {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scrollLine {
-  0%   { transform: translateY(-100%); }
-  50%  { transform: translateY(0%); }
-  100% { transform: translateY(100%); }
 }

@@ -76,7 +76,7 @@ export default function Preloader() {
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[9999] bg-[#F5F0EB] flex items-center justify-center pointer-events-none"
+      className="fixed inset-0 z-[9999] bg-background flex items-center justify-center pointer-events-none"
       style={{ display: "none" }}
       aria-hidden="true"
     >
@@ -84,7 +84,7 @@ export default function Preloader() {
         {/* Title — above line */}
         <span
           ref={titleRef}
-          className="font-display text-xl uppercase tracking-[0.3em] text-[#1A1A1A] pb-1"
+          className="font-display text-xl uppercase tracking-[0.3em] text-foreground pb-1"
         >
           EXOVIO
         </span>
@@ -92,14 +92,14 @@ export default function Preloader() {
         {/* Expanding line */}
         <div
           ref={lineRef}
-          className="h-px bg-[#1A1A1A]/30"
+          className="h-px bg-foreground/40"
           style={{ width: 0 }}
         />
 
         {/* Subtitle — below line */}
         <span
           ref={subtitleRef}
-          className="font-body text-xs uppercase tracking-[0.15em] text-[#8B8680] pt-1"
+          className="font-body text-xs uppercase tracking-[0.15em] text-muted pt-1"
         >
           Beyond Digital Vision
         </span>

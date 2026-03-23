@@ -8,8 +8,8 @@ import MobileMenu from '@/components/layout/MobileMenu';
 const NAV_LINKS = [
   { label: 'Work',     href: '/work' },
   { label: 'Services', href: '/services' },
-  { label: 'About',    href: '/about' },
-  { label: 'Contact',  href: '/contact' },
+  { label: 'About',   href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 function LiveClock() {
@@ -23,15 +23,13 @@ function LiveClock() {
       const ss = String(now.getSeconds()).padStart(2, '0');
       return `${hh}:${mm}:${ss} IST`;
     };
+
     const id = setInterval(() => setTime(format()), 1000);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <span
-      suppressHydrationWarning
-      className="text-xs text-[#8B8680] tabular-nums hidden md:block select-none"
-    >
+    <span suppressHydrationWarning className="text-xs text-subtle tabular-nums hidden md:block select-none">
       {time}
     </span>
   );
@@ -51,7 +49,7 @@ function NavLink({ label, href }: { label: string; href: string }) {
     <TransitionLink
       href={href}
       data-cursor-hover
-      className="relative text-xs tracking-wide text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300 pb-0.5 no-underline"
+      className="relative text-xs tracking-wide text-muted hover:text-foreground transition-colors duration-300 pb-0.5 no-underline"
       style={{ textDecoration: 'none' }}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
@@ -60,7 +58,7 @@ function NavLink({ label, href }: { label: string; href: string }) {
       <span
         ref={lineRef}
         aria-hidden="true"
-        className="absolute bottom-0 left-0 h-px bg-[#1A1A1A]"
+        className="absolute bottom-0 left-0 h-px bg-foreground"
         style={{ width: '0%' }}
       />
     </TransitionLink>
@@ -72,58 +70,71 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Mount animation
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
-    gsap.fromTo(el, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
+
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: -20 },
+      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
+    );
   }, []);
 
+  // Scroll background
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <>
-      <nav
-        ref={navRef}
-        className={[
-          'fixed top-0 left-0 right-0 z-[998] flex items-center justify-between',
-          'px-6 md:px-10 py-5 transition-all duration-500',
-          scrolled ? 'bg-[#F5F0EB]/80 backdrop-blur-md' : 'bg-transparent',
-          menuOpen ? 'invisible pointer-events-none' : 'visible',
-        ].join(' ')}
+    <nav
+      ref={navRef}
+      className={[
+        'fixed top-0 left-0 right-0 z-[998] flex items-center justify-between',
+        'px-6 md:px-10 py-5 transition-all duration-500',
+        scrolled ? 'bg-background/80 backdrop-blur-md' : 'bg-transparent',
+        menuOpen ? 'invisible pointer-events-none' : 'visible',
+      ].join(' ')}
+    >
+      {/* Left: Wordmark */}
+      <TransitionLink
+        href="/"
+        data-cursor-hover
+        className="font-display font-medium text-sm tracking-wide text-foreground"
       >
-        <TransitionLink
-          href="/"
-          data-cursor-hover
-          className="font-display font-medium text-sm tracking-wide text-[#1A1A1A]"
-        >
-          Exovio
-        </TransitionLink>
+        Exovio
+      </TransitionLink>
 
-        <LiveClock />
+      {/* Center: Clock */}
+      <LiveClock />
 
-        <div className="flex items-center gap-6 md:gap-8">
-          <div className="hidden md:flex items-center gap-6 md:gap-8">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} {...link} />
-            ))}
-          </div>
-          <button
-            data-cursor-hover
-            onClick={() => setMenuOpen(true)}
-            className="md:hidden text-xs tracking-wide text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300"
-          >
-            Menu
-          </button>
+      {/* Right: Nav links (desktop) / Menu (mobile) */}
+      <div className="flex items-center gap-6 md:gap-8">
+        <div className="hidden md:flex items-center gap-6 md:gap-8">
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.href} {...link} />
+          ))}
         </div>
-      </nav>
+        <button
+          data-cursor-hover
+          onClick={() => setMenuOpen(true)}
+          className="md:hidden text-xs tracking-wide text-muted hover:text-foreground transition-colors duration-300"
+        >
+          Menu
+        </button>
+      </div>
+    </nav>
 
-      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+    <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 }

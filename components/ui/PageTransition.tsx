@@ -44,7 +44,7 @@ export default function PageTransition() {
   return (
     <div
       ref={panelRef}
-      className="fixed inset-0 z-[9998] bg-[#F5F0EB] pointer-events-none"
+      className="fixed inset-0 z-[9998] bg-surface pointer-events-none"
       style={{ transform: 'translateY(100%)' }}
     >
     </div>

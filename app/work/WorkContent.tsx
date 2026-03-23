@@ -126,7 +126,7 @@ function ProjectCard({
         {/* Card image area */}
         <div
           className={[
-            "relative overflow-hidden rounded-lg border border-[#D9D4CE]/50",
+            "relative overflow-hidden rounded-lg border border-white/5",
             large ? "aspect-[16/9]" : "aspect-[4/3]",
           ].join(" ")}
         >
@@ -142,14 +142,14 @@ function ProjectCard({
           {/* Dark overlay */}
           <div
             ref={overlayRef}
-            className="absolute inset-0 bg-[#1A1A1A]/40 z-10"
+            className="absolute inset-0 bg-background/60 z-10"
             style={{ opacity: 0 }}
           />
 
           {/* Centered name */}
           <p
             ref={labelRef}
-            className="absolute inset-0 z-20 flex items-center justify-center font-display text-2xl text-[#F5F0EB] text-center px-6"
+            className="absolute inset-0 z-20 flex items-center justify-center font-display text-2xl text-foreground text-center px-6"
             style={{ opacity: 0, transform: "translateY(8px)" }}
           >
             {name}
@@ -167,7 +167,7 @@ function ProjectCard({
 
         {/* Meta row */}
         <div className="flex items-center justify-between mt-4">
-          <span className="font-display text-lg text-[#1A1A1A]">{name}</span>
+          <span className="font-display text-lg text-foreground">{name}</span>
           <span className="text-xs text-muted uppercase tracking-wider">
             {category}
           </span>
@@ -179,7 +179,7 @@ function ProjectCard({
 
 export default function WorkContent() {
   return (
-    <div className="bg-[#F5F0EB]">
+    <div className="bg-background">
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-40 md:py-60 px-6 md:px-16">
         <div className="max-w-7xl mx-auto flex flex-col gap-8">
