@@ -14,7 +14,7 @@ const ROWS = [
     {
       name: "Researchly",
       category: "AI Research Platform",
-      image: "/images/projects/researchly.png",
+      image: "/images/projects/Researchly.png",
       large: true,
       url: "https://researchly.in",
     },

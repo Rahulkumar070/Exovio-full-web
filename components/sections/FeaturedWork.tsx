@@ -8,7 +8,7 @@ const PROJECTS = [
   {
     name: "Researchly",
     category: "AI Research Platform",
-    image: "/images/projects/researchly.png",
+    image: "/images/projects/Researchly.png",
     aspect: "aspect-[16/9]",
     col: "col-span-12 md:col-span-7",
     url: "https://researchly.in",
