@@ -17,9 +17,12 @@
   body { cursor: none; }
 }
 
-html, body {
+html {
   background-color: #080808 !important;
-  overflow-x: hidden;
+}
+body {
+  background-color: #080808 !important;
+  overflow-x: clip;
   overscroll-behavior: none;
 }
 

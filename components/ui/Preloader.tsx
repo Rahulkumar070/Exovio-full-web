@@ -36,10 +36,11 @@ export default function Preloader() {
     // ── Timeline ───────────────────────────────────────────
     const tl = gsap.timeline({
       onComplete: () => {
+        document.body.style.cssText = '';
+        document.documentElement.style.cssText = '';
         root.style.display = "none";
         root.style.zIndex = "-1";
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
+        root.style.pointerEvents = "none";
       },
     });
     tlRef.current = tl;

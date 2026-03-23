@@ -36,43 +36,28 @@ export default function CustomCursor() {
       });
     };
 
-    const onEnterHoverable = () => {
-      gsap.to(cursor, { scale: 2.5, duration: 0.3, ease: 'power3.out' });
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a, button, [data-cursor-hover]')) {
+        gsap.to(cursor, { scale: 2.5, duration: 0.3, ease: 'power3.out' });
+      }
     };
 
-    const onLeaveHoverable = () => {
-      gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power3.out' });
+    const onMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a, button, [data-cursor-hover]')) {
+        gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power3.out' });
+      }
     };
 
-    const addHoverListeners = (el: Element) => {
-      el.addEventListener('mouseenter', onEnterHoverable);
-      el.addEventListener('mouseleave', onLeaveHoverable);
-    };
-
-    const removeHoverListeners = (el: Element) => {
-      el.removeEventListener('mouseenter', onEnterHoverable);
-      el.removeEventListener('mouseleave', onLeaveHoverable);
-    };
-
-    // Observe DOM for dynamically added hoverables
-    const attachToHoverables = () => {
-      document
-        .querySelectorAll('a, button, [data-cursor-hover]')
-        .forEach(addHoverListeners);
-    };
-
-    const observer = new MutationObserver(attachToHoverables);
-    observer.observe(document.body, { childList: true, subtree: true });
-
+    document.addEventListener('mouseover', onMouseOver);
+    document.addEventListener('mouseout', onMouseOut);
     window.addEventListener('mousemove', onMove);
-    attachToHoverables();
 
     return () => {
+      document.removeEventListener('mouseover', onMouseOver);
+      document.removeEventListener('mouseout', onMouseOut);
       window.removeEventListener('mousemove', onMove);
-      observer.disconnect();
-      document
-        .querySelectorAll('a, button, [data-cursor-hover]')
-        .forEach(removeHoverListeners);
     };
   }, []);
 

@@ -3,17 +3,22 @@ import { useEffect } from 'react';
 
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // Skip Lenis on touch devices — native scroll is better
+    const isTouchDevice =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      (navigator.userAgent.includes('Mac') && navigator.maxTouchPoints > 1);
+
+    if (isTouchDevice) return;
+
+    let lenis: any = null;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const Lenis = require('lenis').default;
-      const lenis = new Lenis({
+      lenis = new Lenis({
         duration: 1.2,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
         smoothWheel: true,
-        syncTouch: false,
-        touchMultiplier: 2,
       });
 
       function raf(time: number) {
@@ -21,12 +26,11 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
         requestAnimationFrame(raf);
       }
       requestAnimationFrame(raf);
+    } catch (e) {}
 
-      return () => { lenis.destroy(); };
-    } catch (e) {
-      // Lenis failed — native scroll works as fallback
-      console.warn('Lenis failed to initialize, using native scroll');
-    }
+    return () => {
+      if (lenis) lenis.destroy();
+    };
   }, []);
 
   return <>{children}</>;

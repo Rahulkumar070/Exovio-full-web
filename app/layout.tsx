@@ -140,28 +140,38 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${outfit.variable} ${dmSans.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${outfit.variable} ${dmSans.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body suppressHydrationWarning className="bg-[#080808] text-foreground font-body min-h-full flex flex-col" style={{ backgroundColor: '#080808' }}>
+      <body suppressHydrationWarning className="bg-[#080808] text-foreground font-body min-h-screen" style={{ backgroundColor: '#080808' }}>
+        <JsonLd data={organizationJsonLd} />
+        <JsonLd data={websiteJsonLd} />
         {/* Film grain overlay */}
-        <div aria-hidden="true" className="fixed inset-0 z-50 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" className="opacity-[0.035]">
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-30 pointer-events-none select-none"
+          style={{ pointerEvents: 'none' }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            height="100%"
+            className="opacity-[0.035]"
+            style={{ pointerEvents: 'none' }}
+          >
             <filter id="grain-filter">
               <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
               <feColorMatrix type="saturate" values="0" />
             </filter>
-            <rect width="100%" height="100%" filter="url(#grain-filter)" />
+            <rect width="100%" height="100%" filter="url(#grain-filter)" style={{ pointerEvents: 'none' }} />
           </svg>
         </div>
-        <JsonLd data={organizationJsonLd} />
-        <JsonLd data={websiteJsonLd} />
         <LenisProvider>
           <TransitionProvider>
             <PageTransition />
             <Preloader />
             <CustomCursor />
             <Navbar />
-            <main id="main-content" className="flex-1">{children}</main>
+            <main id="main-content">{children}</main>
             <Footer />
           </TransitionProvider>
         </LenisProvider>
