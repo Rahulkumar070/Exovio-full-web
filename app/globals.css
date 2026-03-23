@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-outfit);
+  --font-body: var(--font-dm-sans);
+  --font-serif: var(--font-instrument-serif);
+
+  --color-background: #080808;
+  --color-surface: #111111;
+  --color-foreground: #F5F5F0;
+  --color-muted: #999999;
+  --color-subtle: #666666;
+  --color-border: #222222;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+}
+
+html, body {
+  background-color: #080808 !important;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+::selection {
+  background: rgba(245, 245, 240, 0.2);
+  color: #F5F5F0;
+}
+
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
