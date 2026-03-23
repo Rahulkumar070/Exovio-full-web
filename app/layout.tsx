@@ -48,6 +48,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Exovio', url: 'https://exovio.agency' }],
   creator: 'Exovio',
   publisher: 'Exovio',
+  verification: {
+    google: 'CSDreK5y3J2xZl9nlyxPnwQoC3MvKyx-PV8CLCTRqi8',
+  },
   robots: {
     index: true,
     follow: true,
