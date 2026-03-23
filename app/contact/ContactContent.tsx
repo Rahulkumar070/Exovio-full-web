@@ -1,74 +1,70 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import AnimatedLabel from '@/components/animations/AnimatedLabel';
-import AnimatedHeading from '@/components/animations/AnimatedHeading';
-import FadeIn from '@/components/animations/FadeIn';
+import { useState } from "react";
+import AnimatedLabel from "@/components/animations/AnimatedLabel";
+import AnimatedHeading from "@/components/animations/AnimatedHeading";
+import FadeIn from "@/components/animations/FadeIn";
 
 const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/hello.exovio/' },
-  { label: 'X',         href: '#' },
-  { label: 'Dribbble',  href: '#' },
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/exovio-ai/' },
+  { label: "Instagram", href: "https://www.instagram.com/hello.exovio/" },
+  { label: "X", href: "#" },
+  { label: "Dribbble", href: "#" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/exovio-ai/" },
 ];
 
-const BUDGET_OPTIONS = [
-  '$5k – $10k',
-  '$10k – $25k',
-  '$25k – $50k',
-  '$50k+',
-];
+const BUDGET_OPTIONS = ["$5k – $10k", "$10k – $25k", "$25k – $50k", "$50k+"];
 
 export default function ContactContent() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    budget: '',
-    message: '',
+    name: "",
+    email: "",
+    budget: "",
+    message: "",
   });
-  const [sending, setSending]   = useState(false);
-  const [success, setSuccess]   = useState(false);
-  const [formError, setFormError] = useState('');
+  const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError('');
+    setFormError("");
 
     if (!formData.name || !formData.email || !formData.message) {
-      setFormError('Please fill in your name, email, and message.');
+      setFormError("Please fill in your name, email, and message.");
       return;
     }
 
     setSending(true);
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      if (!res.ok) throw new Error('Failed');
+      if (!res.ok) throw new Error("Failed");
       setSuccess(true);
     } catch {
-      setFormError('Something went wrong. Please try again.');
+      setFormError("Something went wrong. Please try again.");
     } finally {
       setSending(false);
     }
   };
 
   const inputClass =
-    'w-full bg-transparent text-foreground border-b border-border py-4 text-sm ' +
-    'placeholder:text-subtle focus:outline-none focus:border-foreground transition-colors duration-300';
+    "w-full bg-transparent text-foreground border-b border-border py-4 text-sm " +
+    "placeholder:text-subtle focus:outline-none focus:border-foreground transition-colors duration-300";
 
   return (
     <div className="bg-background">
-
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-32 md:py-40 px-6 md:px-16">
         <div className="max-w-7xl mx-auto flex flex-col gap-8">
@@ -78,7 +74,9 @@ export default function ContactContent() {
 
           <AnimatedHeading
             className="font-display font-light text-foreground leading-[0.95] tracking-tight max-w-4xl"
-            style={{ fontSize: 'clamp(2rem, 4vw, 4.5rem)' } as React.CSSProperties}
+            style={
+              { fontSize: "clamp(2rem, 4vw, 4.5rem)" } as React.CSSProperties
+            }
             delay={0.1}
           >
             Let&apos;s build something extraordinary together
@@ -89,10 +87,11 @@ export default function ContactContent() {
       {/* ── Main content ─────────────────────────────────────── */}
       <section className="pb-20 md:pb-32 px-6 md:px-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-0">
-
           {/* Left — Contact info */}
           <FadeIn direction="up" className="md:col-span-4 flex flex-col">
-            <p className="text-sm text-muted uppercase tracking-widest mb-8">Reach out</p>
+            <p className="text-sm text-muted uppercase tracking-widest mb-8">
+              Reach out
+            </p>
 
             <a
               href="mailto:hello.exovio@gmail.com"
@@ -102,7 +101,7 @@ export default function ContactContent() {
               hello.exovio@gmail.com
             </a>
 
-            <p className="text-sm text-muted mt-4">Aurangabad, India</p>
+            <p className="text-sm text-muted mt-4">Nagpur, India</p>
 
             <p className="text-sm text-muted mt-8">
               Currently accepting projects for Q2 2026
@@ -130,7 +129,7 @@ export default function ContactContent() {
               <div className="flex flex-col gap-4 pt-8">
                 <p
                   className="font-display font-light text-foreground leading-tight"
-                  style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}
+                  style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
                 >
                   Message sent!
                 </p>
@@ -141,10 +140,12 @@ export default function ContactContent() {
             ) : (
               <form onSubmit={handleSubmit} noValidate>
                 <div className="flex flex-col gap-10">
-
                   <FadeIn direction="up" delay={0.1}>
                     <div>
-                      <label htmlFor="name" className="block text-xs text-muted uppercase tracking-widest mb-2">
+                      <label
+                        htmlFor="name"
+                        className="block text-xs text-muted uppercase tracking-widest mb-2"
+                      >
                         Your Name
                       </label>
                       <input
@@ -162,7 +163,10 @@ export default function ContactContent() {
 
                   <FadeIn direction="up" delay={0.2}>
                     <div>
-                      <label htmlFor="email" className="block text-xs text-muted uppercase tracking-widest mb-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-xs text-muted uppercase tracking-widest mb-2"
+                      >
                         Your Email
                       </label>
                       <input
@@ -180,7 +184,10 @@ export default function ContactContent() {
 
                   <FadeIn direction="up" delay={0.3}>
                     <div>
-                      <label htmlFor="budget" className="block text-xs text-muted uppercase tracking-widest mb-2">
+                      <label
+                        htmlFor="budget"
+                        className="block text-xs text-muted uppercase tracking-widest mb-2"
+                      >
                         Budget Range
                       </label>
                       <select
@@ -188,13 +195,23 @@ export default function ContactContent() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleChange}
-                        className={inputClass + ' cursor-pointer appearance-none'}
+                        className={
+                          inputClass + " cursor-pointer appearance-none"
+                        }
                       >
-                        <option value="" disabled className="bg-background text-subtle">
+                        <option
+                          value=""
+                          disabled
+                          className="bg-background text-subtle"
+                        >
                           Select a range
                         </option>
                         {BUDGET_OPTIONS.map((opt) => (
-                          <option key={opt} value={opt} className="bg-background text-foreground">
+                          <option
+                            key={opt}
+                            value={opt}
+                            className="bg-background text-foreground"
+                          >
                             {opt}
                           </option>
                         ))}
@@ -204,7 +221,10 @@ export default function ContactContent() {
 
                   <FadeIn direction="up" delay={0.4}>
                     <div>
-                      <label htmlFor="message" className="block text-xs text-muted uppercase tracking-widest mb-2">
+                      <label
+                        htmlFor="message"
+                        className="block text-xs text-muted uppercase tracking-widest mb-2"
+                      >
                         Tell Us About Your Project
                       </label>
                       <textarea
@@ -214,7 +234,7 @@ export default function ContactContent() {
                         value={formData.message}
                         onChange={handleChange}
                         rows={4}
-                        className={inputClass + ' resize-none min-h-[120px]'}
+                        className={inputClass + " resize-none min-h-[120px]"}
                       />
                     </div>
                   </FadeIn>
@@ -228,19 +248,19 @@ export default function ContactContent() {
                       type="submit"
                       disabled={sending}
                       className={[
-                        'mt-8 w-full rounded-full bg-foreground text-background py-4 text-sm uppercase tracking-widest transition-opacity duration-300',
-                        sending ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90',
-                      ].join(' ')}
+                        "mt-8 w-full rounded-full bg-foreground text-background py-4 text-sm uppercase tracking-widest transition-opacity duration-300",
+                        sending
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:opacity-90",
+                      ].join(" ")}
                     >
-                      {sending ? 'Sending...' : 'Send Message'}
+                      {sending ? "Sending..." : "Send Message"}
                     </button>
                   </FadeIn>
-
                 </div>
               </form>
             )}
           </div>
-
         </div>
 
         {/* Bottom note */}
@@ -248,7 +268,6 @@ export default function ContactContent() {
           We typically respond within 24 hours.
         </p>
       </section>
-
     </div>
   );
 }
