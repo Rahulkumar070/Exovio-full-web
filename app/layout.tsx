@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/shared/LenisProvider";
+import JsonLd from "@/components/shared/JsonLd";
 import { TransitionProvider } from "@/components/ui/TransitionProvider";
 import CustomCursor from "@/components/ui/CustomCursor";
 import Preloader from "@/components/ui/Preloader";
@@ -26,23 +27,108 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: 'Exovio — Beyond Digital Vision',
+  metadataBase: new URL('https://exovio.agency'),
+  title: {
+    default: 'Exovio — Beyond Digital Vision',
+    template: '%s | Exovio',
+  },
   description:
     'Award-winning web design and development agency. We create websites that win awards, drive results, and leave lasting impressions.',
-  keywords: 'web design, development, branding, motion design, agency, Awwwards',
+  keywords: [
+    'web design',
+    'web development',
+    'branding',
+    'motion design',
+    'agency',
+    'Awwwards',
+    'Next.js',
+    'GSAP',
+    'UI/UX',
+  ],
+  authors: [{ name: 'Exovio', url: 'https://exovio.agency' }],
+  creator: 'Exovio',
+  publisher: 'Exovio',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: 'Exovio — Beyond Digital Vision',
-    description: 'Award-winning web design and development agency.',
+    description:
+      'Award-winning web design and development agency. We create websites that win awards, drive results, and leave lasting impressions.',
     url: 'https://exovio.agency',
     siteName: 'Exovio',
+    locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Exovio — Beyond Digital Vision',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Exovio — Beyond Digital Vision',
-    description: 'Award-winning web design and development agency.',
+    description:
+      'Award-winning web design and development agency. We create websites that win awards, drive results, and leave lasting impressions.',
+    creator: '@exovio',
+    images: ['/opengraph-image'],
   },
-  icons: { icon: '/favicon.svg' },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  alternates: {
+    canonical: 'https://exovio.agency',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#080808',
+  colorScheme: 'dark',
+};
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Exovio',
+  url: 'https://exovio.agency',
+  logo: 'https://exovio.agency/android-chrome-512x512.png',
+  description:
+    'Award-winning web design and development agency. We create websites that win awards, drive results, and leave lasting impressions.',
+  sameAs: [],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    url: 'https://exovio.agency/contact',
+  },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Exovio',
+  url: 'https://exovio.agency',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://exovio.agency/work?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
 };
 
 export default function RootLayout({
@@ -67,6 +153,8 @@ export default function RootLayout({
             <rect width="100%" height="100%" filter="url(#grain-filter)" />
           </svg>
         </div>
+        <JsonLd data={organizationJsonLd} />
+        <JsonLd data={websiteJsonLd} />
         <LenisProvider>
           <TransitionProvider>
             <PageTransition />

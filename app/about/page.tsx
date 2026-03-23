@@ -2,7 +2,16 @@ import type { Metadata } from 'next';
 import AnimatedLabel from '@/components/animations/AnimatedLabel';
 
 export const metadata: Metadata = {
-  title: 'About Exovio — Our Story, Process & Values',
+  title: 'About — Our Story, Process & Values',
+  description:
+    'Exovio was founded with a single belief: great design is the most powerful business tool. Learn about our philosophy, process, and the team behind the work.',
+  openGraph: {
+    title: 'About Exovio — Our Story, Process & Values',
+    description:
+      'Exovio was founded with a single belief: great design is the most powerful business tool.',
+    url: 'https://exovio.agency/about',
+  },
+  alternates: { canonical: 'https://exovio.agency/about' },
 };
 import AnimatedHeading from '@/components/animations/AnimatedHeading';
 import FadeIn from '@/components/animations/FadeIn';

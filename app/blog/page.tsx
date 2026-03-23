@@ -3,6 +3,15 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Insights — Thoughts on Design, Code & Craft',
+  description:
+    'Perspectives on web design, development craft, motion, and the business of building digital products that stand out.',
+  openGraph: {
+    title: 'Insights — Thoughts on Design, Code & Craft | Exovio',
+    description:
+      'Perspectives on web design, development craft, motion, and the business of building digital products that stand out.',
+    url: 'https://exovio.agency/blog',
+  },
+  alternates: { canonical: 'https://exovio.agency/blog' },
 };
 import AnimatedLabel from '@/components/animations/AnimatedLabel';
 import AnimatedHeading from '@/components/animations/AnimatedHeading';
