@@ -38,6 +38,8 @@ export default function Preloader() {
       onComplete: () => {
         root.style.display = "none";
         root.style.zIndex = "-1";
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
       },
     });
     tlRef.current = tl;
