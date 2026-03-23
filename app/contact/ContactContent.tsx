@@ -60,11 +60,11 @@ export default function ContactContent() {
   };
 
   const inputClass =
-    "w-full bg-transparent text-foreground border-b border-border py-4 text-sm " +
-    "placeholder:text-subtle focus:outline-none focus:border-foreground transition-colors duration-300";
+    "w-full bg-transparent text-[#1A1A1A] border-b border-[#D9D4CE] py-4 text-sm " +
+    "placeholder:text-[#8B8680] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300";
 
   return (
-    <div className="bg-background">
+    <div className="bg-[#F5F0EB]">
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-32 md:py-40 px-6 md:px-16">
         <div className="max-w-7xl mx-auto flex flex-col gap-8">
@@ -202,7 +202,7 @@ export default function ContactContent() {
                         <option
                           value=""
                           disabled
-                          className="bg-background text-subtle"
+                          className="bg-[#F5F0EB] text-[#8B8680]"
                         >
                           Select a range
                         </option>
@@ -210,7 +210,7 @@ export default function ContactContent() {
                           <option
                             key={opt}
                             value={opt}
-                            className="bg-background text-foreground"
+                            className="bg-[#F5F0EB] text-[#1A1A1A]"
                           >
                             {opt}
                           </option>
@@ -248,10 +248,10 @@ export default function ContactContent() {
                       type="submit"
                       disabled={sending}
                       className={[
-                        "mt-8 w-full rounded-full bg-foreground text-background py-4 text-sm uppercase tracking-widest transition-opacity duration-300",
+                        "mt-8 w-full rounded-full bg-[#1A1A1A] text-[#F5F0EB] py-4 text-sm uppercase tracking-widest transition-all duration-300",
                         sending
                           ? "opacity-50 cursor-not-allowed"
-                          : "hover:opacity-90",
+                          : "hover:bg-[#C17F59]",
                       ].join(" ")}
                     >
                       {sending ? "Sending..." : "Send Message"}

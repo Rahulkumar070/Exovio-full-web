@@ -1,95 +1,104 @@
-"use client";
+'use client';
 
-import AnimatedLabel from "@/components/animations/AnimatedLabel";
-import AnimatedHeading from "@/components/animations/AnimatedHeading";
-import FadeIn from "@/components/animations/FadeIn";
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import FadeIn from '@/components/animations/FadeIn';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const PROJECTS = [
   {
-    name: "Researchly",
-    category: "AI Research Platform",
-    image: "/images/projects/Researchly.png",
-    aspect: "aspect-[16/9]",
-    col: "col-span-12 md:col-span-7",
-    url: "https://researchly.in",
+    name: 'Researchly',
+    category: 'AI Research Platform',
+    description:
+      'An intelligent research assistant that helps students and academics find, analyze, and synthesize academic papers.',
+    image: '/images/projects/Researchly.png',
+    url: 'https://researchly.in',
   },
   {
-    name: "Exovio Agency",
-    category: "Agency Website",
-    image: "/images/projects/Exovio.png",
-    aspect: "aspect-[4/3]",
-    col: "col-span-12 md:col-span-5",
-    url: "https://exovio.agency",
+    name: 'Exovio Agency',
+    category: 'Agency Website',
+    description:
+      'Our own award-level agency website — built with Next.js, GSAP, and obsessive attention to craft.',
+    image: '/images/projects/Exovio.png',
+    url: 'https://exovio.agency',
   },
 ];
 
 function ProjectCard({
   name,
   category,
+  description,
   image,
-  aspect,
-  col,
-  delay,
   url,
+  index,
 }: {
   name: string;
   category: string;
+  description: string;
   image: string;
-  aspect: string;
-  col: string;
-  delay: number;
   url: string;
+  index: number;
 }) {
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (!el) return;
+    const img = el.querySelector('img');
+    if (!img) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate: (self) => {
+        gsap.set(img, { scale: 1.1 - self.progress * 0.1 });
+      },
+    });
+
+    return () => trigger.kill();
+  }, []);
+
   return (
-    <FadeIn direction="up" delay={delay} className={col}>
+    <FadeIn direction="up" delay={index * 0.15}>
       <a
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="no-underline"
-        style={{ textDecoration: "none" }}
+        className="group block"
+        data-cursor-hover
       >
-        <div data-cursor-hover className="flex flex-col group cursor-pointer">
-          {/* Image area */}
-          <div
-            className={`relative overflow-hidden rounded-lg border border-white/5 ${aspect}`}
-          >
-            {/* Project image */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image}
-              alt={name}
-              className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-[1.03] group-hover:brightness-90 transition-all duration-700 ease-out"
-            />
+        {/* Image */}
+        <div
+          ref={imgRef}
+          className="overflow-hidden rounded-xl bg-[#E8E3DD]"
+          style={{ aspectRatio: '16/9' }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-1000 ease-out"
+          />
+        </div>
 
-            {/* Dark overlay on hover */}
-            <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-
-            {/* Centered project name overlay */}
-            <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <span
-                className="font-display text-foreground text-center px-6 leading-tight"
-                style={{ fontSize: "clamp(1.5rem, 2.5vw, 2rem)" }}
-              >
-                {name}
+        {/* Info below image */}
+        <div className="mt-6 flex flex-col md:flex-row md:items-start md:justify-between gap-2 md:gap-8">
+          <div>
+            <h3 className="font-display text-xl md:text-2xl text-[#1A1A1A] group-hover:text-[#C17F59] transition-colors duration-300">
+              {name}{' '}
+              <span className="inline-block group-hover:translate-x-1 transition-transform duration-300">
+                ‣
               </span>
-            </div>
-
-            {/* View Project — bottom right */}
-            <div className="absolute bottom-5 right-5 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-              <span className="text-xs text-foreground/80 tracking-wide uppercase">
-                View Project →
-              </span>
-            </div>
+            </h3>
+            <p className="text-sm text-[#8B8680] mt-1 max-w-md">{description}</p>
           </div>
-
-          {/* Meta */}
-          <div className="flex items-center justify-between mt-4">
-            <span className="font-display text-lg text-foreground">{name}</span>
-            <span className="text-xs text-muted uppercase tracking-wider">
-              {category}
-            </span>
-          </div>
+          <span className="text-xs uppercase tracking-[0.15em] text-[#8B8680] shrink-0 mt-1">
+            {category}
+          </span>
         </div>
       </a>
     </FadeIn>
@@ -98,25 +107,34 @@ function ProjectCard({
 
 export default function FeaturedWork() {
   return (
-    <section className="py-40 md:py-60 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-6 mb-16 md:mb-24">
-          <FadeIn direction="up">
-            <AnimatedLabel>Selected Work</AnimatedLabel>
-          </FadeIn>
-          <AnimatedHeading
-            className="font-display font-medium text-foreground leading-tight tracking-tight"
-            style={
-              { fontSize: "clamp(2rem, 4vw, 4rem)" } as React.CSSProperties
-            }
-          >
-            Projects that speak
-          </AnimatedHeading>
-        </div>
+    <section className="py-32 md:py-48 px-6 md:px-16">
+      <div className="max-w-6xl mx-auto">
+        <FadeIn direction="up">
+          <div className="flex items-end justify-between mb-16 md:mb-24">
+            <div>
+              <span className="text-xs uppercase tracking-[0.2em] text-[#8B8680]">
+                Recent Work
+              </span>
+              <h2
+                className="font-display text-[#1A1A1A] mt-2 font-light"
+                style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+              >
+                Selected Projects
+              </h2>
+            </div>
+            <a
+              href="/work"
+              className="text-sm text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300 hidden md:block"
+              data-cursor-hover
+            >
+              All projects →
+            </a>
+          </div>
+        </FadeIn>
 
-        <div className="grid grid-cols-12 gap-4 md:gap-6">
+        <div className="flex flex-col gap-20 md:gap-32">
           {PROJECTS.map((p, i) => (
-            <ProjectCard key={p.name} {...p} delay={i * 0.15} />
+            <ProjectCard key={p.name} {...p} index={i} />
           ))}
         </div>
       </div>

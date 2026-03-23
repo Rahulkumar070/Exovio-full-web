@@ -65,7 +65,7 @@ export default function CustomCursor() {
     <div
       ref={cursorRef}
       aria-hidden="true"
-      className="fixed top-0 left-0 z-[9999] pointer-events-none size-8 rounded-full bg-white"
+      className="fixed top-0 left-0 z-[9999] pointer-events-none size-8 rounded-full bg-[#1A1A1A]"
       style={{ mixBlendMode: 'difference' }}
     />
   );

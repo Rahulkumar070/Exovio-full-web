@@ -1,10 +1,8 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import AnimatedHeading from '@/components/animations/AnimatedHeading';
-import AnimatedLabel from '@/components/animations/AnimatedLabel';
 import HoverImageReveal from '@/components/ui/HoverImageReveal';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,119 +16,97 @@ const HOVER_IMAGES = [
   'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=400&h=300&fit=crop',
 ];
 
-const HERO_TEXT =
-  'Exovio is a design and development agency based in India. We collaborate with ambitious brands and startups to create websites that win awards, drive results, and leave lasting impressions.';
-
-function ScrollIndicator() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLSpanElement>(null);
+export default function Hero() {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const arrow = arrowRef.current;
-    if (!wrapper || !arrow) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Step 4: fade in at 1.2s
-    if (!prefersReducedMotion) {
-      gsap.set(wrapper, { opacity: 0 });
-      gsap.to(wrapper, { opacity: 1, duration: 0.8, delay: 1.2, ease: 'power2.out' });
-
-      // Bounce arrow
-      gsap.to(arrow, {
-        y: 8,
-        repeat: -1,
-        yoyo: true,
-        duration: 1,
-        ease: 'sine.inOut',
-        delay: 1.2,
-      });
-    }
-
-    // Fade out when user scrolls past 100px
-    let visible = true;
-    const onScroll = () => {
-      const scrolled = window.scrollY > 100;
-      if (scrolled && visible) {
-        visible = false;
-        gsap.to(wrapper, { opacity: 0, duration: 0.4, ease: 'power2.out' });
-      } else if (!scrolled && !visible) {
-        visible = true;
-        gsap.to(wrapper, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      gsap.killTweensOf(wrapper);
-      gsap.killTweensOf(arrow);
-      window.removeEventListener('scroll', onScroll);
-    };
+    setIsFirstVisit(!sessionStorage.getItem('preloader-shown'));
   }, []);
-
-  return (
-    <div ref={wrapperRef} className="flex items-center gap-3">
-      <AnimatedLabel>Scroll to explore</AnimatedLabel>
-      <span ref={arrowRef} aria-hidden="true" className="inline-block text-muted text-xs">
-        ↓
-      </span>
-    </div>
-  );
-}
-
-export default function Hero() {
-  const watermarkRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    // Step 2 (0.3s): watermark fades in
-    gsap.fromTo(
-      watermarkRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 1.2, delay: 0.3, ease: 'power2.out' }
-    );
-  }, []);
+    const delay = isFirstVisit ? 2.2 : 0.3;
+    const heading = headingRef.current;
+    const subtitle = subtitleRef.current;
+    const scroll = scrollRef.current;
+
+    if (heading) {
+      gsap.fromTo(
+        heading,
+        { opacity: 0, y: 60 },
+        { opacity: 1, y: 0, duration: 1.2, delay, ease: 'power3.out' }
+      );
+    }
+    if (subtitle) {
+      gsap.fromTo(
+        subtitle,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, delay: delay + 0.3, ease: 'power3.out' }
+      );
+    }
+    if (scroll) {
+      gsap.fromTo(
+        scroll,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, delay: delay + 0.8, ease: 'power2.out' }
+      );
+    }
+  }, [isFirstVisit]);
 
   return (
-    <section className="relative min-h-screen bg-background flex flex-col justify-end px-6 md:px-16 pb-20 md:pb-32 overflow-hidden">
-
-      {/* Step 2: Background watermark */}
-      <div
-        ref={watermarkRef}
-        aria-hidden="true"
-        className="absolute top-0 left-0 right-0 font-display uppercase leading-none pointer-events-none select-none overflow-hidden"
-        style={{
-          fontSize: 'clamp(8rem, 20vw, 18rem)',
-          color: 'rgba(245, 245, 240, 0.03)',
-          opacity: 0,
-        }}
-      >
-        EXOVIO
-      </div>
-
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col gap-6">
-        {/* Step 3 (0.5s): paragraph word reveal via AnimatedHeading */}
+    <section className="min-h-screen flex flex-col justify-center px-6 md:px-16 relative">
+      <div className="max-w-6xl">
+        {/* Main heading — editorial style like Monopo */}
         <HoverImageReveal images={HOVER_IMAGES}>
-          <AnimatedHeading
-            className="font-display font-light leading-[1.2] tracking-tight text-foreground max-w-5xl"
-            style={{ fontSize: 'clamp(1.5rem, 3.5vw, 3rem)' } as React.CSSProperties}
-            delay={0.5}
+          <h1
+            ref={headingRef}
+            className="font-serif text-[#1A1A1A] leading-[1.05] tracking-[-0.02em]"
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)', opacity: 0 }}
           >
-            {HERO_TEXT}
-          </AnimatedHeading>
+            We are a design &amp; development agency crafting{' '}
+            <em className="text-[#C17F59]">digital experiences</em>{' '}
+            that captivate and convert.
+          </h1>
         </HoverImageReveal>
 
-        {/* Separator */}
-        <div className="w-16 h-px bg-border" />
-
-        {/* Step 4 (1.2s): scroll indicator fades in */}
-        <ScrollIndicator />
+        {/* Subtitle info row */}
+        <div
+          ref={subtitleRef}
+          className="mt-12 flex flex-col md:flex-row md:items-center gap-4 md:gap-12"
+          style={{ opacity: 0 }}
+        >
+          <span className="text-sm text-[#8B8680]">
+            <strong className="text-[#1A1A1A] font-medium">Based in India</strong> — Working globally
+          </span>
+          <span className="text-sm text-[#8B8680]">
+            <strong className="text-[#1A1A1A] font-medium">Design-driven</strong> creative agency
+          </span>
+          <span className="text-sm text-[#8B8680]">
+            <strong className="text-[#1A1A1A] font-medium">Web, Brand</strong> &amp; Motion
+          </span>
+        </div>
       </div>
 
+      {/* Scroll indicator */}
+      <div
+        ref={scrollRef}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        style={{ opacity: 0 }}
+        aria-hidden="true"
+      >
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[#8B8680]">Scroll</span>
+        <div className="w-px h-12 bg-[#D9D4CE] relative overflow-hidden">
+          <div
+            className="w-full h-full bg-[#1A1A1A]"
+            style={{ animation: 'scrollLine 2s ease-in-out infinite' }}
+          />
+        </div>
+      </div>
     </section>
   );
 }

@@ -45,7 +45,7 @@ const PROCESS_STEPS = [
 
 export default function AboutPage() {
   return (
-    <div className="bg-background">
+    <div className="bg-[#F5F0EB]">
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-40 md:py-60 px-6 md:px-16">

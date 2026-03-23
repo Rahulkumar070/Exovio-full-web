@@ -31,7 +31,6 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const tlRef     = useRef<gsap.core.Timeline | null>(null);
 
-  // Build the open/close timeline
   useEffect(() => {
     const overlay = overlayRef.current;
     if (!overlay) return;
@@ -39,17 +38,13 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     const links  = linksRef.current.filter(Boolean);
     const bottom = bottomRef.current;
 
-    // Initial state — hidden, clipped, invisible elements
-    gsap.set(overlay, { clipPath: 'inset(0 0 100% 0)' }); // keep display:none from HTML
+    gsap.set(overlay, { clipPath: 'inset(0 0 100% 0)' });
     gsap.set(links,  { y: 60, opacity: 0 });
     gsap.set(bottom, { opacity: 0 });
 
-    return () => {
-      tlRef.current?.kill();
-    };
+    return () => { tlRef.current?.kill(); };
   }, []);
 
-  // React to isOpen changes
   useEffect(() => {
     const overlay = overlayRef.current;
     if (!overlay) return;
@@ -66,58 +61,30 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       tlRef.current = tl;
 
       tl.set(overlay, { display: 'flex' })
-        .to(overlay, {
-          clipPath: 'inset(0 0 0% 0)',
-          duration: 0.6,
-          ease: 'power3.inOut',
-        })
-        .to(links, {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power3.out',
-          stagger: 0.06,
-        }, '-=0.3')
-        .to(bottom, {
-          opacity: 1,
-          duration: 0.4,
-          ease: 'power2.out',
-        }, '-=0.2');
+        .to(overlay, { clipPath: 'inset(0 0 0% 0)', duration: 0.6, ease: 'power3.inOut' })
+        .to(links,  { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', stagger: 0.06 }, '-=0.3')
+        .to(bottom, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '-=0.2');
     } else {
       document.body.style.overflow = '';
 
       const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.set(overlay, { display: 'none' });
-        },
+        onComplete: () => { gsap.set(overlay, { display: 'none' }); },
       });
       tlRef.current = tl;
 
       tl.to([bottom, ...links.slice().reverse()], {
-          y: 30,
-          opacity: 0,
-          duration: 0.25,
-          ease: 'power2.in',
-          stagger: 0.03,
+          y: 30, opacity: 0, duration: 0.25, ease: 'power2.in', stagger: 0.03,
         })
-        .to(overlay, {
-          clipPath: 'inset(0 0 100% 0)',
-          duration: 0.5,
-          ease: 'power3.inOut',
-        }, '-=0.1');
+        .to(overlay, { clipPath: 'inset(0 0 100% 0)', duration: 0.5, ease: 'power3.inOut' }, '-=0.1');
     }
   }, [isOpen]);
 
-  // Restore scroll on unmount (guard against navigating away while open)
   useEffect(() => {
     return () => { document.body.style.overflow = ''; };
   }, []);
 
-  // Escape key — only attach listener when menu is open
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
+    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     if (isOpen) window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
@@ -130,24 +97,24 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       className="fixed inset-0 z-[9999] flex-col justify-between"
       style={{
         display: 'none',
-        backgroundColor: '#080808',
+        backgroundColor: '#F5F0EB',
         clipPath: 'inset(0 0 100% 0)',
       }}
     >
-      {/* Top row — always visible, own padding, z-10 so it's never covered */}
+      {/* Top row */}
       <div className="relative z-10 flex items-center justify-between px-6 py-5">
         <Link
           href="/"
           data-cursor-hover
           onClick={handleLinkClick}
-          className="font-display font-medium text-sm tracking-wide text-foreground"
+          className="font-display font-medium text-sm tracking-wide text-[#1A1A1A]"
         >
           Exovio
         </Link>
         <button
           data-cursor-hover
           onClick={onClose}
-          className="text-sm tracking-wide text-muted hover:text-foreground transition-colors duration-300"
+          className="text-sm tracking-wide text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300"
         >
           Close
         </button>
@@ -166,11 +133,11 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 className="group flex items-baseline gap-4 no-underline"
                 style={{ textDecoration: 'none' }}
               >
-                <span className="text-sm text-muted font-mono tabular-nums w-6 shrink-0">
+                <span className="text-sm text-[#8B8680] font-mono tabular-nums w-6 shrink-0">
                   {num}
                 </span>
                 <span
-                  className="font-display font-light text-foreground leading-tight group-hover:translate-x-3 transition-transform duration-300"
+                  className="font-display font-light text-[#1A1A1A] leading-tight group-hover:translate-x-3 group-hover:text-[#C17F59] transition-all duration-300"
                   style={{ fontSize: 'clamp(2.5rem, 8vw, 4.5rem)' }}
                 >
                   {label}
@@ -186,7 +153,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         <a
           href="mailto:hello.exovio@gmail.com"
           data-cursor-hover
-          className="text-sm text-muted hover:text-foreground transition-colors duration-300"
+          className="text-sm text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300"
         >
           hello.exovio@gmail.com
         </a>
@@ -198,7 +165,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               data-cursor-hover
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-muted hover:text-foreground transition-colors duration-300"
+              className="text-xs text-[#8B8680] hover:text-[#1A1A1A] transition-colors duration-300"
             >
               {label}
             </a>

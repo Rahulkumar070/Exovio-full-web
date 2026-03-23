@@ -84,7 +84,7 @@ function ServiceBlock({
 }) {
   return (
     <FadeIn direction="up" delay={delay}>
-      <div className="border-b border-border">
+      <div className="border-b border-[#D9D4CE]">
         {/* Header — always visible */}
         <button
           data-cursor-hover
@@ -93,13 +93,13 @@ function ServiceBlock({
           aria-expanded={isOpen}
         >
           <div className="flex items-center gap-6 md:gap-10">
-            <span className="text-muted text-sm font-mono shrink-0">{num}</span>
-            <span className="font-display text-2xl md:text-3xl text-foreground">{title}</span>
+            <span className="text-[#8B8680] text-sm font-mono shrink-0">{num}</span>
+            <span className="font-display text-2xl md:text-3xl text-[#1A1A1A]">{title}</span>
           </div>
 
           {/* +/× toggle icon */}
           <span
-            className="text-muted text-2xl leading-none transition-transform duration-300 shrink-0"
+            className="text-[#8B8680] text-2xl leading-none transition-transform duration-300 shrink-0"
             style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}
             aria-hidden="true"
           >
@@ -124,9 +124,9 @@ function ServiceBlock({
                 {deliverables.map((item) => (
                   <li
                     key={item}
-                    className="text-sm text-foreground/70 flex items-center gap-3"
+                    className="text-sm text-[#1A1A1A]/70 flex items-center gap-3"
                   >
-                    <span className="w-1 h-1 rounded-full bg-foreground/30 shrink-0" aria-hidden="true" />
+                    <span className="w-1 h-1 rounded-full bg-[#1A1A1A]/30 shrink-0" aria-hidden="true" />
                     {item}
                   </li>
                 ))}
@@ -147,7 +147,7 @@ export default function ServicesContent() {
   };
 
   return (
-    <div className="bg-background">
+    <div className="bg-[#F5F0EB]">
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="py-40 md:py-60 px-6 md:px-16">
@@ -174,7 +174,7 @@ export default function ServicesContent() {
 
       {/* ── Services accordion ───────────────────────────────── */}
       <section className="px-6 md:px-16 pb-32">
-        <div className="max-w-7xl mx-auto border-t border-border">
+        <div className="max-w-7xl mx-auto border-t border-[#D9D4CE]">
           {SERVICES.map((service, i) => (
             <ServiceBlock
               key={service.num}

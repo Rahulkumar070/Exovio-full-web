@@ -102,8 +102,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#080808',
-  colorScheme: 'dark',
+  themeColor: '#F5F0EB',
+  colorScheme: 'light',
 };
 
 const organizationJsonLd = {
@@ -145,7 +145,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${outfit.variable} ${dmSans.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body suppressHydrationWarning className="bg-[#080808] text-foreground font-body min-h-screen" style={{ backgroundColor: '#080808' }}>
+      <body suppressHydrationWarning className="bg-[#F5F0EB] text-[#1A1A1A] font-body min-h-screen" style={{ backgroundColor: '#F5F0EB' }}>
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={websiteJsonLd} />
         {/* Film grain overlay */}
@@ -158,7 +158,7 @@ export default function RootLayout({
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
             height="100%"
-            className="opacity-[0.035]"
+            className="opacity-[0.02]"
             style={{ pointerEvents: 'none' }}
           >
             <filter id="grain-filter">
