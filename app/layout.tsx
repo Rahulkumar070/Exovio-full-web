@@ -24,16 +24,80 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Exovio — Design-Led Digital Agency",
+  metadataBase: new URL("https://www.exovio.agency"),
+
+  title: {
+    default: "Exovio — UI/UX & Web Design Agency",
+    template: "%s | Exovio Agency",
+  },
+
   description:
-    "Exovio is a design-led agency crafting digital experiences from vision to reality.",
+    "Exovio is a design-led UI/UX and web development agency crafting high-performance digital experiences for modern brands.",
+
+  keywords: [
+    "design agency India",
+    "UI UX agency India",
+    "web design agency",
+    "creative digital agency",
+    "modern website design",
+  ],
+
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    title: "Exovio — UI/UX & Web Design Agency",
+    description:
+      "Design-led agency crafting modern digital experiences, UI/UX systems, and high-performance websites.",
+    url: "https://www.exovio.agency",
+    siteName: "Exovio",
+    images: [
+      {
+        url: "/og-image.png", // ✅ YOUR FINAL OG IMAGE
+        width: 1200,
+        height: 630,
+        alt: "Exovio — Design-led digital agency",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Exovio — UI/UX & Web Design Agency",
+    description: "Design-led agency crafting modern digital experiences.",
+    images: ["/og-image.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/images/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/images/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
@@ -43,6 +107,29 @@ export default function RootLayout({
         className="bg-background text-foreground antialiased"
         suppressHydrationWarning
       >
+        {/* ✅ ADVANCED STRUCTURED DATA */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "Exovio",
+                url: "https://www.exovio.agency",
+                logo: "https://www.exovio.agency/logo.png",
+                sameAs: ["https://twitter.com/", "https://linkedin.com/"],
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "Exovio",
+                url: "https://www.exovio.agency",
+              },
+            ]),
+          }}
+        />
+
         <SmoothScroll>
           <CustomCursor />
           {children}
