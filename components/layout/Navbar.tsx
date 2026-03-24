@@ -1,140 +1,94 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import TransitionLink from '@/components/ui/TransitionLink';
-import MobileMenu from '@/components/layout/MobileMenu';
+import { useEffect, useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import TransitionLink from "./TransitionLink";
+import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: 'Work',     href: '/work' },
-  { label: 'Services', href: '/services' },
-  { label: 'About',   href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Work", href: "/work" },
+  { label: "Contact", href: "/contact" },
 ];
 
-function LiveClock() {
-  const [time, setTime] = useState('');
-
-  useEffect(() => {
-    const format = () => {
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const ss = String(now.getSeconds()).padStart(2, '0');
-      return `${hh}:${mm}:${ss} IST`;
-    };
-
-    const id = setInterval(() => setTime(format()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <span suppressHydrationWarning className="text-xs text-subtle tabular-nums hidden md:block select-none">
-      {time}
-    </span>
-  );
+interface NavbarProps {
+  /** Pass false only when a preloader controls visibility (homepage). Defaults true. */
+  isLoaded?: boolean;
+  onMenuOpen: () => void;
 }
 
-function NavLink({ label, href }: { label: string; href: string }) {
-  const lineRef = useRef<HTMLSpanElement>(null);
-
-  const onEnter = () => {
-    gsap.to(lineRef.current, { width: '100%', duration: 0.3, ease: 'power3.out', overwrite: true });
-  };
-  const onLeave = () => {
-    gsap.to(lineRef.current, { width: '0%', duration: 0.2, ease: 'power2.out', overwrite: true });
-  };
-
-  return (
-    <TransitionLink
-      href={href}
-      data-cursor-hover
-      className="relative text-xs tracking-wide text-muted hover:text-foreground transition-colors duration-300 pb-0.5 no-underline"
-      style={{ textDecoration: 'none' }}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-    >
-      {label}
-      <span
-        ref={lineRef}
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 h-px bg-foreground"
-        style={{ width: '0%' }}
-      />
-    </TransitionLink>
-  );
-}
-
-export default function Navbar() {
+export default function Navbar({ isLoaded = true, onMenuOpen }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Mount animation
-  useEffect(() => {
-    const el = navRef.current;
-    if (!el) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: -20 },
-      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
-    );
+  // Set initial hidden state synchronously before first paint
+  useLayoutEffect(() => {
+    if (navRef.current) {
+      gsap.set(navRef.current, { opacity: 0, y: -10 });
+    }
   }, []);
 
-  // Scroll background
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    if (!isLoaded || !navRef.current) return;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduced) {
+      gsap.set(navRef.current, { opacity: 1, y: 0 });
+    } else {
+      gsap.to(navRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        delay: 0.1,
+      });
+    }
+  }, [isLoaded]);
 
   return (
-    <>
     <nav
       ref={navRef}
-      className={[
-        'fixed top-0 left-0 right-0 z-[998] flex items-center justify-between',
-        'px-6 md:px-10 py-5 transition-all duration-500',
-        scrolled ? 'bg-background/80 backdrop-blur-md' : 'bg-transparent',
-        menuOpen ? 'invisible pointer-events-none' : 'visible',
-      ].join(' ')}
+      className="fixed top-0 left-0 right-0 z-50 grid grid-cols-2 px-[2.8rem] py-[1.8rem]"
     >
-      {/* Left: Wordmark */}
-      <TransitionLink
-        href="/"
-        data-cursor-hover
-        className="font-display font-medium text-sm tracking-wide text-foreground"
-      >
-        Exovio
-      </TransitionLink>
+      <div className="flex items-center">
+        <TransitionLink
+          href="/"
+          className="font-display font-bold text-[.82rem] tracking-[.22em] uppercase text-foreground"
+        >
+          EXOVIO®
+        </TransitionLink>
+      </div>
 
-      {/* Center: Clock */}
-      <LiveClock />
-
-      {/* Right: Nav links (desktop) / Menu (mobile) */}
-      <div className="flex items-center gap-6 md:gap-8">
-        <div className="hidden md:flex items-center gap-6 md:gap-8">
-          {NAV_LINKS.map((link) => (
-            <NavLink key={link.href} {...link} />
+      <div className="flex items-center justify-end md:justify-between">
+        <div className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.map(({ label, href }) => (
+            <TransitionLink
+              key={href}
+              href={href}
+              className="font-body text-[.82rem] font-normal tracking-[.02em] text-foreground relative group"
+            >
+              {label}
+              <span className="absolute bottom-0 left-0 w-full h-px bg-foreground scale-x-0 origin-right group-hover:scale-x-100 group-hover:origin-left transition-transform duration-300" />
+            </TransitionLink>
           ))}
         </div>
+
+        <TransitionLink
+          href="/contact"
+          className="hidden md:block font-body text-[.82rem] font-normal text-foreground border-b border-b-[.5px] border-foreground hover:opacity-60 transition-opacity duration-300 pb-px"
+        >
+          Start a project
+        </TransitionLink>
+
         <button
-          data-cursor-hover
-          onClick={() => setMenuOpen(true)}
-          className="md:hidden text-xs tracking-wide text-muted hover:text-foreground transition-colors duration-300"
+          className="md:hidden font-body text-[.82rem] font-normal text-foreground"
+          onClick={onMenuOpen}
+          aria-label="Open menu"
         >
           Menu
         </button>
       </div>
     </nav>
-
-    <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-    </>
   );
 }

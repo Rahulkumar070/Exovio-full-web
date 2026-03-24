@@ -1,72 +1,90 @@
-'use client';
+'use client'
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import { useEffect, useRef, useState } from 'react'
 
 export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: -100, y: -100 });
+  const cursorRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(true) // start hidden during SSR
 
   useEffect(() => {
-    const cursor = cursorRef.current;
-    if (!cursor) return;
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
-    // Hide on touch devices (iPad, tablets, phones)
-    const isTouchDevice = (
-      'ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      /iPad|iPhone|iPod|Android|tablet|Tablet/i.test(navigator.userAgent) ||
-      (navigator.userAgent.includes('Mac') && navigator.maxTouchPoints > 1)
-    );
-    if (isTouchDevice) {
-      cursor.style.display = 'none';
-      return;
+  useEffect(() => {
+    if (isMobile || !cursorRef.current) return
+
+    const cursor = cursorRef.current
+    let mouseX = -100
+    let mouseY = -100
+    let cursorX = -100
+    let cursorY = -100
+    let rafId: number
+
+    const lerp = (a: number, b: number, f: number) => a + (b - a) * f
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX
+      mouseY = e.clientY
     }
 
-    // Keep cursor off-screen until first mouse move
-    gsap.set(cursor, { x: -100, y: -100, xPercent: -50, yPercent: -50 });
-
-    const onMove = (e: MouseEvent) => {
-      pos.current = { x: e.clientX, y: e.clientY };
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 0.5,
-        ease: 'power3.out',
-      });
-    };
-
     const onMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a, button, [data-cursor-hover]')) {
-        gsap.to(cursor, { scale: 2.5, duration: 0.3, ease: 'power3.out' });
+      if ((e.target as HTMLElement).closest('a, button')) {
+        cursor.style.width = '60px'
+        cursor.style.height = '60px'
       }
-    };
+    }
 
     const onMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a, button, [data-cursor-hover]')) {
-        gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power3.out' });
+      const related = e.relatedTarget as HTMLElement | null
+      if (
+        (e.target as HTMLElement).closest('a, button') &&
+        !related?.closest('a, button')
+      ) {
+        cursor.style.width = '18px'
+        cursor.style.height = '18px'
       }
-    };
+    }
 
-    document.addEventListener('mouseover', onMouseOver);
-    document.addEventListener('mouseout', onMouseOut);
-    window.addEventListener('mousemove', onMove);
+    const tick = () => {
+      cursorX = lerp(cursorX, mouseX, 0.12)
+      cursorY = lerp(cursorY, mouseY, 0.12)
+      cursor.style.left = `${cursorX}px`
+      cursor.style.top = `${cursorY}px`
+      rafId = requestAnimationFrame(tick)
+    }
+
+    document.body.style.cursor = 'none'
+    window.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseover', onMouseOver)
+    document.addEventListener('mouseout', onMouseOut)
+    rafId = requestAnimationFrame(tick)
 
     return () => {
-      document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseout', onMouseOut);
-      window.removeEventListener('mousemove', onMove);
-    };
-  }, []);
+      cancelAnimationFrame(rafId)
+      document.body.style.cursor = ''
+      window.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseover', onMouseOver)
+      document.removeEventListener('mouseout', onMouseOut)
+    }
+  }, [isMobile])
+
+  if (isMobile) return null
 
   return (
     <div
       ref={cursorRef}
-      aria-hidden="true"
-      className="fixed top-0 left-0 z-[9999] pointer-events-none size-8 rounded-full bg-white"
-      style={{ mixBlendMode: 'difference' }}
+      className="fixed pointer-events-none z-[9999] rounded-full bg-white"
+      style={{
+        width: 18,
+        height: 18,
+        mixBlendMode: 'difference',
+        transform: 'translate(-50%, -50%)',
+        transition: 'width 0.25s ease, height 0.25s ease',
+        willChange: 'left, top',
+      }}
     />
-  );
+  )
 }

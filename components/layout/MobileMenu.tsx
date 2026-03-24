@@ -1,177 +1,119 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import Link from 'next/link';
-import TransitionLink from '@/components/ui/TransitionLink';
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import TransitionLink from "./TransitionLink";
 
-const NAV_LINKS = [
-  { num: '01', label: 'Work',     href: '/work' },
-  { num: '02', label: 'Services', href: '/services' },
-  { num: '03', label: 'About',    href: '/about' },
-  { num: '04', label: 'Blog',     href: '/blog' },
-  { num: '05', label: 'Contact',  href: '/contact' },
+const MENU_ITEMS = [
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Work", href: "/work" },
+  { label: "Contact", href: "/contact" },
 ];
 
-const SOCIAL_LINKS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/hello.exovio/' },
-  { label: 'X',         href: '#' },
-  { label: 'Dribbble',  href: '#' },
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/company/exovio-ai/' },
-];
-
-interface MobileMenuProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose }: Props) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const linksRef  = useRef<HTMLElement[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const tlRef     = useRef<gsap.core.Timeline | null>(null);
+  const itemsRef = useRef<HTMLSpanElement[]>([]);
+  const didOpen = useRef(false);
 
-  // Build the open/close timeline
   useEffect(() => {
     const overlay = overlayRef.current;
     if (!overlay) return;
 
-    const links  = linksRef.current.filter(Boolean);
-    const bottom = bottomRef.current;
-
-    // Initial state — hidden, clipped, invisible elements
-    gsap.set(overlay, { clipPath: 'inset(0 0 100% 0)' }); // keep display:none from HTML
-    gsap.set(links,  { y: 60, opacity: 0 });
-    gsap.set(bottom, { opacity: 0 });
-
-    return () => {
-      tlRef.current?.kill();
-    };
-  }, []);
-
-  // React to isOpen changes
-  useEffect(() => {
-    const overlay = overlayRef.current;
-    if (!overlay) return;
-
-    const links  = linksRef.current.filter(Boolean);
-    const bottom = bottomRef.current;
-
-    tlRef.current?.kill();
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      didOpen.current = true;
+      document.body.style.overflow = "hidden";
+      gsap.set(overlay, { display: "flex" });
 
-      const tl = gsap.timeline();
-      tlRef.current = tl;
+      if (reduced) {
+        gsap.set(overlay, { clipPath: "inset(0 0 0% 0)" });
+        gsap.set(itemsRef.current, { y: 0, opacity: 1 });
+      } else {
+        gsap.fromTo(
+          overlay,
+          { clipPath: "inset(0 0 100% 0)" },
+          { clipPath: "inset(0 0 0% 0)", duration: 0.65, ease: "power4.inOut" },
+        );
+        gsap.fromTo(
+          itemsRef.current,
+          { y: "110%", opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.55,
+            stagger: 0.07,
+            ease: "power3.out",
+            delay: 0.3,
+          },
+        );
+      }
+    } else if (didOpen.current) {
+      document.body.style.overflow = "";
 
-      tl.set(overlay, { display: 'flex' })
-        .to(overlay, {
-          clipPath: 'inset(0 0 0% 0)',
-          duration: 0.6,
-          ease: 'power3.inOut',
-        })
-        .to(links, {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power3.out',
-          stagger: 0.06,
-        }, '-=0.3')
-        .to(bottom, {
-          opacity: 1,
-          duration: 0.4,
-          ease: 'power2.out',
-        }, '-=0.2');
-    } else {
-      document.body.style.overflow = '';
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.set(overlay, { display: 'none' });
-        },
-      });
-      tlRef.current = tl;
-
-      tl.to([bottom, ...links.slice().reverse()], {
-          y: 30,
-          opacity: 0,
-          duration: 0.25,
-          ease: 'power2.in',
-          stagger: 0.03,
-        })
-        .to(overlay, {
-          clipPath: 'inset(0 0 100% 0)',
-          duration: 0.5,
-          ease: 'power3.inOut',
-        }, '-=0.1');
+      if (reduced) {
+        gsap.set(overlay, { display: "none" });
+      } else {
+        gsap.to(overlay, {
+          clipPath: "inset(0 0 100% 0)",
+          duration: 0.55,
+          ease: "power4.inOut",
+          onComplete: () => {
+            gsap.set(overlay, { display: "none" });
+          },
+        });
+      }
     }
-  }, [isOpen]);
 
-  // Restore scroll on unmount (guard against navigating away while open)
-  useEffect(() => {
-    return () => { document.body.style.overflow = ''; };
-  }, []);
-
-  // Escape key — only attach listener when menu is open
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    return () => {
+      document.body.style.overflow = "";
     };
-    if (isOpen) window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [isOpen, onClose]);
-
-  const handleLinkClick = () => onClose();
+  }, [isOpen]);
 
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex-col justify-between"
-      style={{
-        display: 'none',
-        backgroundColor: '#080808',
-        clipPath: 'inset(0 0 100% 0)',
-      }}
+      className="fixed inset-0 z-[200] bg-background flex-col px-[2.8rem] py-[1.8rem]"
+      style={{ clipPath: "inset(0 0 100% 0)", display: "none" }}
     >
-      {/* Top row — always visible, own padding, z-10 so it's never covered */}
-      <div className="relative z-10 flex items-center justify-between px-6 py-5">
-        <Link
-          href="/"
-          data-cursor-hover
-          onClick={handleLinkClick}
-          className="font-display font-medium text-sm tracking-wide text-foreground"
-        >
-          Exovio
-        </Link>
-        <button
-          data-cursor-hover
-          onClick={onClose}
-          className="text-sm tracking-wide text-muted hover:text-foreground transition-colors duration-300"
-        >
-          Close
-        </button>
+      <div className="grid grid-cols-2">
+        <span className="font-display font-bold text-[.82rem] tracking-[.22em] uppercase text-foreground">
+          EXOVIO®
+        </span>
+        <div className="flex justify-end">
+          <button
+            onClick={onClose}
+            className="font-body text-[.82rem] font-normal text-foreground"
+            aria-label="Close menu"
+          >
+            Close
+          </button>
+        </div>
       </div>
 
-      {/* Navigation links */}
-      <nav className="flex-1 flex items-center px-6">
-        <ul className="flex flex-col gap-2">
-          {NAV_LINKS.map(({ num, label, href }, i) => (
-            <li key={href}>
+      <nav className="flex-1 flex items-center">
+        <ul className="space-y-2">
+          {MENU_ITEMS.map(({ label, href }, i) => (
+            <li key={href} className="overflow-hidden">
               <TransitionLink
                 href={href}
-                data-cursor-hover
-                onClick={handleLinkClick}
-                ref={(el) => { linksRef.current[i] = el as HTMLElement; }}
-                className="group flex items-baseline gap-4 no-underline"
-                style={{ textDecoration: 'none' }}
+                onClick={onClose}
+                className="block font-display text-[clamp(2.5rem,8vw,4rem)] font-light text-foreground hover:text-muted transition-colors duration-300"
               >
-                <span className="text-sm text-muted font-mono tabular-nums w-6 shrink-0">
-                  {num}
-                </span>
                 <span
-                  className="font-display font-light text-foreground leading-tight group-hover:translate-x-3 transition-transform duration-300"
-                  style={{ fontSize: 'clamp(2.5rem, 8vw, 4.5rem)' }}
+                  ref={(el) => {
+                    if (el) itemsRef.current[i] = el;
+                  }}
+                  className="block"
+                  style={{ transform: "translateY(110%)", opacity: 0 }}
                 >
                   {label}
                 </span>
@@ -181,26 +123,22 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </ul>
       </nav>
 
-      {/* Bottom section */}
-      <div ref={bottomRef} className="flex flex-col gap-3 px-6 pb-8">
-        <a
-          href="mailto:hello.exovio@gmail.com"
-          data-cursor-hover
-          className="text-sm text-muted hover:text-foreground transition-colors duration-300"
+      <div className="flex items-end justify-between pt-6 border-t border-border">
+        <TransitionLink
+          href="/contact"
+          onClick={onClose}
+          className="font-body text-[.82rem] text-muted hover:text-foreground transition-colors duration-300"
         >
-          hello.exovio@gmail.com
-        </a>
-        <div className="flex items-center gap-6">
-          {SOCIAL_LINKS.map(({ label, href }) => (
+          Start a project →
+        </TransitionLink>
+        <div className="flex gap-6">
+          {["Instagram", "Twitter/X", "LinkedIn"].map((s) => (
             <a
-              key={label}
-              href={href}
-              data-cursor-hover
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted hover:text-foreground transition-colors duration-300"
+              key={s}
+              href="#"
+              className="font-body text-[.75rem] text-muted hover:text-foreground transition-colors duration-300"
             >
-              {label}
+              {s}
             </a>
           ))}
         </div>

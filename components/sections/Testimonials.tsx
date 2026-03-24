@@ -1,115 +1,165 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import gsap from 'gsap';
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const QUOTES = [
+gsap.registerPlugin(ScrollTrigger);
+
+const TESTIMONIALS = [
   {
-    text: 'Researchly has transformed how I approach academic research. The AI-powered analysis saves me hours every week.',
-    author: '— Dr. Ananya Reddy',
-    role: 'Research Scholar, IIT Bombay',
+    num: "01",
+    quote:
+      "Exovio didn't just redesign our site — they reframed how we talk about ourselves. Our sales cycle dropped by half.",
+    name: "Arjun Mehta",
+    role: "Founder, Luma Health",
   },
   {
-    text: 'Exovio delivered a website that genuinely impressed our investors. The attention to animation and interaction design is next level.',
-    author: '— Vikram Patel',
-    role: 'Co-founder, NovaTech',
+    num: "02",
+    quote:
+      "The attention to motion and micro-detail is unlike anything we'd seen. Every frame of the site is considered. It's the best investment we made in year one.",
+    name: "Sarah Lin",
+    role: "CEO, Arc Systems",
   },
   {
-    text: 'From concept to launch, Exovio made the entire process feel effortless. Our conversion rate doubled within the first month.',
-    author: '— Meera Joshi',
-    role: 'Founder, Bloom Studio',
+    num: "03",
+    quote:
+      "They challenged our brief, questioned our assumptions, and delivered work that made us look five years ahead of our category.",
+    name: "Marcus Reid",
+    role: "Co-founder, Vela Studio",
   },
 ];
 
+const LOGOS = ["Luma", "Arc", "Vela", "Onyx", "Frigate", "NPC Labs"];
+
 export default function Testimonials() {
-  const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
-  const quoteRef = useRef<HTMLDivElement>(null);
-  const isAnimating = useRef(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const logosRef = useRef<HTMLDivElement>(null);
 
-  const goTo = useCallback((next: number) => {
-    if (isAnimating.current || next === activeRef.current) return;
-    isAnimating.current = true;
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReduced) return;
 
-    const el = quoteRef.current;
-    if (!el) { isAnimating.current = false; return; }
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        headerRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: { trigger: headerRef.current, start: "top 85%" },
+        },
+      );
 
-    gsap.to(el, {
-      opacity: 0,
-      y: 12,
-      duration: 0.4,
-      ease: 'power2.in',
-      onComplete: () => {
-        activeRef.current = next;
-        setActive(next);
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return;
         gsap.fromTo(
           el,
-          { opacity: 0, y: -12 },
+          { opacity: 0, y: 32 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.55,
-            ease: 'power3.out',
-            onComplete: () => { isAnimating.current = false; },
-          }
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 85%" },
+            delay: i * 0.12,
+          },
         );
-      },
-    });
+      });
+
+      gsap.fromTo(
+        logosRef.current,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: { trigger: logosRef.current, start: "top 88%" },
+        },
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
-  const startInterval = useCallback(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      goTo((activeRef.current + 1) % QUOTES.length);
-    }, 5000);
-  }, [goTo]);
-
-  useEffect(() => {
-    startInterval();
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [startInterval]);
-
-  const handleDot = (i: number) => {
-    goTo(i);
-    startInterval(); // reset timer on manual nav
-  };
-
-  const q = QUOTES[active];
-
   return (
-    <section className="py-40 md:py-64 px-6 md:px-16 text-center">
-      <div className="max-w-4xl mx-auto flex flex-col items-center gap-10">
-        <div ref={quoteRef} className="flex flex-col items-center min-h-[300px] justify-center will-change-transform">
-          <blockquote
-            className="font-serif text-foreground leading-[1.3]"
-            style={{ fontSize: 'clamp(1.5rem, 3vw, 3rem)' }}
-          >
-            &ldquo;{q.text}&rdquo;
-          </blockquote>
-
-          <div className="flex flex-col items-center gap-1 mt-8">
-            <span className="text-sm text-muted">{q.author}</span>
-            <span className="text-xs text-subtle">{q.role}</span>
-          </div>
+    <section
+      ref={sectionRef}
+      className="px-[2.8rem] pt-28 pb-32 border-t border-border"
+    >
+      {/* Header */}
+      <div
+        ref={headerRef}
+        className="flex items-end justify-between mb-16 opacity-0"
+      >
+        <h2
+          className="font-body font-normal text-foreground tracking-tight"
+          style={{ fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}
+        >
+          What they say
+        </h2>
+        <div className="hidden md:flex gap-2">
+          <button className="w-10 h-10 border border-border flex items-center justify-center hover:bg-surface transition-colors duration-300">
+            <span className="text-muted text-sm">←</span>
+          </button>
+          <button className="w-10 h-10 border border-border flex items-center justify-center hover:bg-surface transition-colors duration-300">
+            <span className="text-muted text-sm">→</span>
+          </button>
         </div>
+      </div>
 
-        {/* Navigation dots */}
-        <div className="flex items-center gap-3" role="tablist" aria-label="Testimonials">
-          {QUOTES.map((_, i) => (
-            <button
-              key={i}
-              role="tab"
-              aria-selected={i === active}
-              onClick={() => handleDot(i)}
-              className={[
-                'w-2 h-2 rounded-full transition-colors duration-300',
-                i === active
-                  ? 'bg-foreground'
-                  : 'bg-foreground/30 hover:bg-foreground/60',
-              ].join(' ')}
-              aria-label={`Quote ${i + 1}`}
-            />
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border mb-20">
+        {TESTIMONIALS.map((t, i) => (
+          <div
+            key={t.num}
+            ref={(el) => {
+              if (el) cardRefs.current[i] = el;
+            }}
+            className="bg-background p-8 flex flex-col justify-between min-h-[280px] opacity-0 group hover:bg-surface transition-colors duration-300"
+          >
+            <div>
+              <span className="font-body text-[.68rem] text-muted tracking-[.1em] block mb-8">
+                {t.num}
+              </span>
+              <p className="font-body text-[.9rem] text-muted font-light leading-[1.9]">
+                &ldquo;{t.quote}&rdquo;
+              </p>
+            </div>
+            <div className="mt-8 pt-6 border-t border-border">
+              <p className="font-body text-[.82rem] text-foreground">
+                {t.name}
+              </p>
+              <p className="font-body text-[.75rem] text-muted mt-1">
+                {t.role}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Logo row */}
+      <div ref={logosRef} className="opacity-0">
+        <p className="font-body text-[.68rem] text-muted uppercase tracking-[.18em] mb-8 text-center">
+          Trusted by
+        </p>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-px bg-border">
+          {LOGOS.map((logo) => (
+            <div
+              key={logo}
+              className="bg-background px-6 py-5 flex items-center justify-center hover:bg-surface transition-colors duration-300"
+            >
+              <span className="font-display font-bold text-[.72rem] text-muted uppercase tracking-[.2em]">
+                {logo}
+              </span>
+            </div>
           ))}
         </div>
       </div>

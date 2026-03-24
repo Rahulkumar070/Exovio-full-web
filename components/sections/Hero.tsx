@@ -1,136 +1,182 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import AnimatedHeading from '@/components/animations/AnimatedHeading';
-import AnimatedLabel from '@/components/animations/AnimatedLabel';
-import HoverImageReveal from '@/components/ui/HoverImageReveal';
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HOVER_IMAGES = [
-  'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=400&h=300&fit=crop',
+const TAGLINE_LINES = ["Designing beyond limits,", "from concept to code."];
+
+const HEADING_LINES = [
+  "Exovio is a design-led",
+  "agency crafting digital",
+  "experiences from",
+  "vision to reality.",
 ];
 
-const HERO_TEXT =
-  'Exovio is a design and development agency based in India. We collaborate with ambitious brands and startups to create websites that win awards, drive results, and leave lasting impressions.';
+const BODY_LINES = [
+  "We partner with ambitious brands and",
+  "visionaries to build identities, websites,",
+  "and digital products that resonate.",
+  "From raw ideas to refined execution—",
+  "built to last.",
+];
 
-function ScrollIndicator() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const arrowRef = useRef<HTMLSpanElement>(null);
+interface HeroProps {
+  isLoaded: boolean;
+}
 
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const arrow = arrowRef.current;
-    if (!wrapper || !arrow) return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Step 4: fade in at 1.2s
-    if (!prefersReducedMotion) {
-      gsap.set(wrapper, { opacity: 0 });
-      gsap.to(wrapper, { opacity: 1, duration: 0.8, delay: 1.2, ease: 'power2.out' });
-
-      // Bounce arrow
-      gsap.to(arrow, {
-        y: 8,
-        repeat: -1,
-        yoyo: true,
-        duration: 1,
-        ease: 'sine.inOut',
-        delay: 1.2,
-      });
-    }
-
-    // Fade out when user scrolls past 100px
-    let visible = true;
-    const onScroll = () => {
-      const scrolled = window.scrollY > 100;
-      if (scrolled && visible) {
-        visible = false;
-        gsap.to(wrapper, { opacity: 0, duration: 0.4, ease: 'power2.out' });
-      } else if (!scrolled && !visible) {
-        visible = true;
-        gsap.to(wrapper, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      gsap.killTweensOf(wrapper);
-      gsap.killTweensOf(arrow);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
-
+function LineBlock({
+  lines,
+  className,
+  refs,
+}: {
+  lines: string[];
+  className: string;
+  refs: React.MutableRefObject<HTMLSpanElement[]>;
+}) {
   return (
-    <div ref={wrapperRef} className="flex items-center gap-3">
-      <AnimatedLabel>Scroll to explore</AnimatedLabel>
-      <span ref={arrowRef} aria-hidden="true" className="inline-block text-muted text-xs">
-        ↓
-      </span>
-    </div>
+    <>
+      {lines.map((line, i) => (
+        <div key={i} className="overflow-hidden">
+          <span
+            ref={(el) => {
+              if (el) refs.current[i] = el;
+            }}
+            className={`block ${className}`}
+            style={{ transform: "translateY(110%)" }}
+          >
+            {line}
+          </span>
+        </div>
+      ))}
+    </>
   );
 }
 
-export default function Hero() {
-  const watermarkRef = useRef<HTMLDivElement>(null);
+export default function Hero({ isLoaded }: HeroProps) {
+  const taglineRefs = useRef<HTMLSpanElement[]>([]);
+  const headingRefs = useRef<HTMLSpanElement[]>([]);
+  const bodyRefs = useRef<HTMLSpanElement[]>([]);
+  const bottomBarRef = useRef<HTMLDivElement>(null);
 
+  const [time, setTime] = useState("");
+
+  // IST Clock
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    // Step 2 (0.3s): watermark fades in
-    gsap.fromTo(
-      watermarkRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 1.2, delay: 0.3, ease: 'power2.out' }
-    );
+    const update = () => {
+      setTime(
+        new Date().toLocaleTimeString("en-US", {
+          timeZone: "Asia/Kolkata",
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        }),
+      );
+    };
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
   }, []);
 
+  // Animations
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReduced) {
+      gsap.set(
+        [...headingRefs.current, ...taglineRefs.current, ...bodyRefs.current],
+        { y: 0 },
+      );
+      gsap.set(bottomBarRef.current, { opacity: 1 });
+      return;
+    }
+
+    const tl = gsap.timeline();
+
+    tl.fromTo(
+      headingRefs.current,
+      { y: "110%" },
+      { y: 0, duration: 1, stagger: 0.09, ease: "power3.out" },
+      0,
+    )
+      .fromTo(
+        taglineRefs.current,
+        { y: "110%" },
+        { y: 0, duration: 1, stagger: 0.07, ease: "power3.out" },
+        0.1,
+      )
+      .fromTo(
+        bodyRefs.current,
+        { y: "110%" },
+        { y: 0, duration: 0.9, stagger: 0.06, ease: "power3.out" },
+        0.2,
+      )
+      .fromTo(
+        bottomBarRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: "power3.out" },
+        0.4,
+      );
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, [isLoaded]);
+
   return (
-    <section className="relative min-h-screen bg-background flex flex-col justify-end px-6 md:px-16 pb-20 md:pb-32 overflow-hidden">
+    <section className="overflow-hidden">
+      {/* MAIN CONTAINER */}
+      <div className="min-h-[100svh] md:min-h-screen flex flex-col px-[2.8rem]">
+        {/* TOP CONTENT */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+          {/* Left */}
+          <div className="flex items-start md:items-center pt-24 md:pt-0">
+            <div className="max-w-[260px]">
+              <LineBlock
+                lines={TAGLINE_LINES}
+                className="font-body text-[clamp(.88rem,1vw,1rem)] font-light text-muted"
+                refs={taglineRefs}
+              />
+            </div>
+          </div>
 
-      {/* Step 2: Background watermark */}
-      <div
-        ref={watermarkRef}
-        aria-hidden="true"
-        className="absolute top-0 left-0 right-0 font-display uppercase leading-none pointer-events-none select-none overflow-hidden"
-        style={{
-          fontSize: 'clamp(8rem, 20vw, 18rem)',
-          color: 'rgba(245, 245, 240, 0.03)',
-          opacity: 0,
-        }}
-      >
-        EXOVIO
+          {/* Right */}
+          <div className="flex items-start md:items-center pb-12 md:pb-0">
+            <div>
+              <div className="mb-10">
+                <LineBlock
+                  lines={HEADING_LINES}
+                  className="font-body text-[clamp(1.7rem,3.4vw,3rem)] font-normal leading-[1.32] tracking-tight text-foreground"
+                  refs={headingRefs}
+                />
+              </div>
+              <LineBlock
+                lines={BODY_LINES}
+                className="font-body text-[clamp(.88rem,1.05vw,1rem)] font-light text-muted"
+                refs={bodyRefs}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM BAR */}
+        <div
+          ref={bottomBarRef}
+          className="flex justify-between items-center py-6 border-t border-border opacity-0"
+        >
+          <span className="font-body text-[.75rem] text-muted">
+            Nagpur, India{time ? ` — ${time} IST` : ""}
+          </span>
+          <span className="font-body text-[.75rem] text-muted">(Scroll)</span>
+        </div>
       </div>
-
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col gap-6">
-        {/* Step 3 (0.5s): paragraph word reveal via AnimatedHeading */}
-        <HoverImageReveal images={HOVER_IMAGES}>
-          <AnimatedHeading
-            className="font-display font-light leading-[1.2] tracking-tight text-foreground max-w-5xl"
-            style={{ fontSize: 'clamp(1.5rem, 3.5vw, 3rem)' } as React.CSSProperties}
-            delay={0.5}
-          >
-            {HERO_TEXT}
-          </AnimatedHeading>
-        </HoverImageReveal>
-
-        {/* Separator */}
-        <div className="w-16 h-px bg-border" />
-
-        {/* Step 4 (1.2s): scroll indicator fades in */}
-        <ScrollIndicator />
-      </div>
-
     </section>
   );
 }

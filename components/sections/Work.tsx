@@ -1,166 +1,188 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import Image from 'next/image';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import FadeIn from '@/components/animations/FadeIn';
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const PROJECTS = [
-  {
-    title: 'Researchly',
-    category: 'AI Research Platform',
-    image: '/images/projects/Researchly.png',
-    href: 'https://researchly.in',
-  },
-  {
-    title: 'Exovio Agency',
-    category: 'Agency Website',
-    image: '/images/projects/Exovio.png',
-    href: 'https://exovio.agency',
-  },
-];
-
-function ProjectCard({
-  title,
-  category,
-  image,
-  href,
-  index,
-}: {
-  title: string;
-  category: string;
-  image: string;
-  href: string;
-  index: number;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const parallaxRef = useRef<HTMLDivElement>(null);
-  const scaleRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+export default function Work() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<HTMLDivElement[]>([]);
+  const imageRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    const parallax = parallaxRef.current;
-    const container = containerRef.current;
-    if (!parallax || !container) return;
+    const ctx = gsap.context(() => {
+      // Fade in animation
+      itemRefs.current.forEach((el, i) => {
+        if (!el) return;
 
-    const trigger = ScrollTrigger.create({
-      trigger: container,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: 1.2,
-      onUpdate: (self) => {
-        gsap.set(parallax, { y: `${self.progress * -8}%` });
-      },
-    });
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            delay: i * 0.1,
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+            },
+          },
+        );
+      });
 
-    return () => trigger.kill();
+      // 🔥 PARALLAX EFFECT
+      imageRefs.current.forEach((el) => {
+        if (!el) return;
+
+        gsap.to(el, {
+          y: "-15%",
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
-  const onEnter = () => {
-    gsap.to(scaleRef.current, { scale: 1.05, duration: 1.2, ease: 'power3.out', overwrite: 'auto' });
-    gsap.to(overlayRef.current, { opacity: 1, duration: 0.5, ease: 'power2.out' });
-  };
-
-  const onLeave = () => {
-    gsap.to(scaleRef.current, { scale: 1.0, duration: 1.2, ease: 'power3.out', overwrite: 'auto' });
-    gsap.to(overlayRef.current, { opacity: 0, duration: 0.4, ease: 'power2.out' });
-  };
-
   return (
-    <FadeIn direction="up" delay={index * 0.1}>
-      <div className="mb-24 last:mb-0">
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-cursor-hover
-          onMouseEnter={onEnter}
-          onMouseLeave={onLeave}
-          className="group block"
-        >
-          {/* Image container */}
-          <div
-            ref={containerRef}
-            className="w-full overflow-hidden rounded-lg relative"
-            style={{ aspectRatio: '16/9' }}
-          >
-            {/* Parallax layer */}
-            <div ref={parallaxRef} className="absolute inset-0 will-change-transform" style={{ height: '115%', top: '-7.5%' }}>
-              {/* Scale layer */}
-              <div ref={scaleRef} className="w-full h-full will-change-transform">
-                <Image
-                  src={image}
-                  alt={title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 90vw"
-                />
-              </div>
-            </div>
+    <section
+      ref={sectionRef}
+      className="px-[1.6rem] md:px-[3rem] lg:px-[6rem] pt-24 md:pt-32 pb-24 md:pb-32 border-t border-border overflow-hidden"
+    >
+      {/* HEADER */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
+        <h2 className="text-[clamp(3rem,10vw,8rem)] leading-none text-foreground">
+          Work
+        </h2>
 
-            {/* Hover overlay */}
-            <div
-              ref={overlayRef}
-              className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-[#0A0A0A]/20 to-transparent flex items-end p-8 md:p-12"
-              style={{ opacity: 0 }}
-              aria-hidden="true"
-            >
-              <span
-                className="font-display text-[#E8E4DD]"
-                style={{ fontSize: 'clamp(1.5rem, 3vw, 3rem)' }}
-              >
-                {title} ↗
-              </span>
-            </div>
-          </div>
-
-          {/* Meta row */}
-          <div className="flex items-center justify-between mt-6">
-            <span
-              className="font-display text-[#E8E4DD] group-hover:text-[#C17F59] transition-colors duration-300"
-              style={{ fontSize: 'clamp(1.25rem, 2vw, 1.75rem)' }}
-            >
-              {title}
-            </span>
-            <span className="text-xs text-[#777777] uppercase tracking-[0.2em]">
-              {category}
-            </span>
-          </div>
-        </a>
+        <p className="text-muted max-w-md leading-[1.9]">
+          Highlights of cases we passionately built with forward-thinking
+          clients and friends.
+        </p>
       </div>
-    </FadeIn>
-  );
-}
 
-export default function Work() {
-  return (
-    <section className="bg-[#0A0A0A] py-32 md:py-48 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-16 md:mb-24">
-          <FadeIn direction="up">
-            <p className="text-xs uppercase tracking-[0.2em] text-[#777777] mb-4">
-              [ Selected Work ]
-            </p>
-          </FadeIn>
-          <div className="overflow-hidden">
-            <h2
-              className="font-display font-light text-[#E8E4DD] leading-[0.9] tracking-tight"
-              style={{ fontSize: 'clamp(4rem, 10vw, 10rem)' }}
+      {/* MAIN GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.6fr] gap-12 lg:gap-24">
+        {/* LEFT PROJECT */}
+        <div
+          ref={(el) => {
+            if (el) itemRefs.current[0] = el;
+          }}
+          className="space-y-5"
+        >
+          <div className="relative w-full aspect-[4/5] overflow-hidden">
+            <div
+              ref={(el) => {
+                if (el) imageRefs.current[0] = el;
+              }}
+              className="absolute inset-0 scale-110"
             >
-              Work
-            </h2>
+              <img
+                src="/images/work1.jpg"
+                alt="Luma Health"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <span className="absolute bottom-4 left-4 text-xs text-muted">
+              2024
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="text-foreground">Luma Health</span>
+            <span className="text-muted">Brand Identity & Web</span>
           </div>
         </div>
 
-        {/* Projects */}
-        <div>
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.title} {...project} index={i} />
-          ))}
+        {/* RIGHT PROJECT */}
+        <div
+          ref={(el) => {
+            if (el) itemRefs.current[1] = el;
+          }}
+          className="space-y-6"
+        >
+          <p className="text-muted max-w-sm leading-[1.8]">
+            Highlights of cases that we passionately built with forward-thinking
+            clients and friends over the years.
+          </p>
+
+          <div className="relative w-full aspect-[16/10] overflow-hidden">
+            <div
+              ref={(el) => {
+                if (el) imageRefs.current[1] = el;
+              }}
+              className="absolute inset-0 scale-110"
+            >
+              <img
+                src="/images/work2.jpg"
+                alt="Arc Systems"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <span className="absolute bottom-4 left-4 text-xs text-muted">
+              2024
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="text-foreground">Arc Systems</span>
+            <span className="text-muted">Digital Experience</span>
+          </div>
+        </div>
+      </div>
+
+      {/* SECOND ROW */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-24">
+        <div
+          ref={(el) => {
+            if (el) itemRefs.current[2] = el;
+          }}
+          className="relative w-full aspect-[4/5] overflow-hidden"
+        >
+          <div
+            ref={(el) => {
+              if (el) imageRefs.current[2] = el;
+            }}
+            className="absolute inset-0 scale-110"
+          >
+            <img
+              src="/images/work3.jpg"
+              alt="Project 3"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        <div
+          ref={(el) => {
+            if (el) itemRefs.current[3] = el;
+          }}
+          className="relative w-full aspect-[4/5] overflow-hidden"
+        >
+          <div
+            ref={(el) => {
+              if (el) imageRefs.current[3] = el;
+            }}
+            className="absolute inset-0 scale-110"
+          >
+            <img
+              src="/images/work4.jpg"
+              alt="Project 4"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>
