@@ -24,7 +24,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.exovio.agency"),
+  metadataBase: new URL("https://exovio.agency"), // ✅ non-www
 
   title: {
     default: "Exovio — UI/UX & Web Design Agency",
@@ -43,18 +43,18 @@ export const metadata: Metadata = {
   ],
 
   alternates: {
-    canonical: "/",
+    canonical: "https://exovio.agency", // ✅ absolute non-www canonical
   },
 
   openGraph: {
     title: "Exovio — UI/UX & Web Design Agency",
     description:
       "Design-led agency crafting modern digital experiences, UI/UX systems, and high-performance websites.",
-    url: "https://www.exovio.agency",
+    url: "https://exovio.agency", // ✅ non-www
     siteName: "Exovio",
     images: [
       {
-        url: "/og-image.png", // ✅ YOUR FINAL OG IMAGE
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Exovio — Design-led digital agency",
@@ -116,15 +116,15 @@ export default function RootLayout({
                 "@context": "https://schema.org",
                 "@type": "Organization",
                 name: "Exovio",
-                url: "https://www.exovio.agency",
-                logo: "https://www.exovio.agency/logo.png",
+                url: "https://exovio.agency", // ✅ non-www
+                logo: "https://exovio.agency/logo.png", // ✅ non-www
                 sameAs: ["https://twitter.com/", "https://linkedin.com/"],
               },
               {
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 name: "Exovio",
-                url: "https://www.exovio.agency",
+                url: "https://exovio.agency", // ✅ non-www
               },
             ]),
           }}
