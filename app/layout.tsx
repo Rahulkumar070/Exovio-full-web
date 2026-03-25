@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     default: "Exovio — UI/UX & Web Design Agency",
     template: "%s | Exovio Agency",
   },
+  verification: {
+    google: "CSDreK5y3J2xZl9nlyxPnwQoC3MvKyx-PV8CLCTRqi8", // only the content value, not the full tag
+  },
 
   description:
     "Exovio is a design-led UI/UX and web development agency crafting high-performance digital experiences for modern brands.",
