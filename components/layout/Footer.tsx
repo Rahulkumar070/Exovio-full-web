@@ -163,7 +163,7 @@ export default function Footer() {
             </p>
 
             <p className="font-body text-[.82rem] text-muted leading-[1.8]">
-              Nashik — India
+              Nagpur — India
               <br />
               {time && <span className="text-foreground">{time} IST</span>}
             </p>
