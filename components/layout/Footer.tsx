@@ -113,7 +113,7 @@ export default function Footer() {
                 href="mailto:hello@exovio.agency"
                 className="font-body text-[.82rem] text-foreground hover:opacity-60 transition-opacity duration-300 border-b border-foreground pb-px"
               >
-                hello@exovio.agency
+                hello.exovio@gmail.com
               </a>
             </div>
           </div>
